@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora MU Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col items-center p-6">
+  <h1 class="text-3xl font-bold mb-6 text-blue-400">Calculadora de Puntos MU Online</h1>
+
+  <div class="bg-gray-800 rounded-2xl shadow-lg p-6 w-full max-w-md space-y-4">
+    <label class="block">
+      <span class="text-gray-300">Clase</span>
+      <select id="classSelect" class="mt-1 w-full bg-gray-700 rounded-xl p-2">
+        <option value="mg">Magic Gladiator (MG)</option>
+        <option value="dl">Dark Lord (DL)</option>
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="text-gray-300">Tipo de Build</span>
+      <select id="buildSelect" class="mt-1 w-full bg-gray-700 rounded-xl p-2">
+        <option value="mg-energia">MG PvE Energía</option>
+        <option value="mg-balanceado">MG PvE Balanceado</option>
+        <option value="dl-chaotic">DL PvE Chaotic</option>
+        <option value="dl-energia">DL PvE Energía</option>
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="text-gray-300">Puntos totales</span>
+      <input type="number" id="totalPoints" class="mt-1 w-full bg-gray-700 rounded-xl p-2" value="12400" />
+    </label>
+
+    <button onclick="calcularPuntos()" class="w-full bg-blue-600 hover:bg-blue-500 rounded-xl p-2 font-semibold">Calcular</button>
+  </div>
+
+  <div id="result" class="mt-6 w-full max-w-md bg-gray-800 rounded-2xl p-6 hidden">
+    <h2 class="text-xl font-semibold text-blue-300 mb-4">Distribución:</h2>
+    <ul id="resultList" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    const presets = {
+      "mg-energia": { str: 0.15, agi: 0.20, vit: 0.25, ene: 0.40 },
+      "mg-balanceado": { str: 0.15, agi: 0.25, vit: 0.30, ene: 0.30 },
+      "dl-chaotic": { str: 0.35, agi: 0.20, vit: 0.25, ene: 0.05, cmd: 0.15 },
+      "dl-energia": { str: 0.10, agi: 0.10, vit: 0.20, ene: 0.45, cmd: 0.15 },
+    };
+
+    function calcularPuntos() {
+      const clase = document.getElementById("classSelect").value;
+      const build = document.getElementById("buildSelect").value;
+      const total = parseInt(document.getElementById("totalPoints").value);
+
+      const preset = presets[build];
+      const resultado = {};
+      for (const stat in preset) {
+        resultado[stat] = Math.floor(total * preset[stat]);
+      }
+
+      const resultList = document.getElementById("resultList");
+      resultList.innerHTML = "";
+
+      for (const stat in resultado) {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong class="text-blue-400 uppercase">${stat}</strong>: ${resultado[stat]} puntos`;
+        resultList.appendChild(li);
+      }
+
+      document.getElementById("result").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
